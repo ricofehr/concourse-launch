@@ -1,0 +1,15 @@
+---
+- hosts: all
+  serial: 1
+  become: true
+  strategy: free
+  roles:
+    - base
+    - role: docker
+      become: yes
+      tags: ['docker', 'virtualization']
+    - role: concourse
+      tags: ['concourse']
+  pre_tasks:
+    - name: Ensure gitmodules update
+      local_action: command git submodule update --init --recursive
