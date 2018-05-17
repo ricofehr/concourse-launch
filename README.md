@@ -5,7 +5,8 @@ Running concourse containers into an ubuntu vm
 ## Install and start
 
 ```
-$ vgrant up
+$ git submodule update --init --recursive
+$ vagrant up
 ```
 
 ## Concourse Webui
