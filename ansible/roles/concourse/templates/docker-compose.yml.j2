@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: concourse
       POSTGRES_PASSWORD: changeme
       PGDATA: /database
+    networks:
+      - concourse_default
 
   concourse-web:
     image: concourse/concourse
@@ -25,14 +27,24 @@ services:
       CONCOURSE_POSTGRES_USER: concourse
       CONCOURSE_POSTGRES_PASSWORD: changeme
       CONCOURSE_POSTGRES_DATABASE: concourse
+    networks:
+      - concourse_default
 
   concourse-worker:
     image: concourse/concourse
     privileged: true
     links: [concourse-web]
     depends_on: [concourse-web]
-    command: worker
+    command: "worker --garden-mtu 1350"
     volumes: ["./keys/worker:/concourse-keys"]
     environment:
     - CONCOURSE_TSA_HOST=concourse-web:2222
     - CONCOURSE_GARDEN_NETWORK
+  networks:
+      - concourse_default
+
+networks:
+  concourse_default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1350
